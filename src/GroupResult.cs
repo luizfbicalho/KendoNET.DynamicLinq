@@ -8,9 +8,9 @@ namespace KendoNET.DynamicLinq
     {
         // Small letter properties are kendo js properties so please excuse the warnings
         [DataMember(Name = "value")]
-        public object Value { get; set; }
+        public object? Value { get; set; }
 
-        public string SelectorField { get; set; }
+        public string SelectorField { get; set; } = string.Empty;
 
         [DataMember(Name = "field")]
         public string Field
@@ -21,10 +21,10 @@ namespace KendoNET.DynamicLinq
         public int Count { get; set; }
 
         [DataMember(Name = "aggregates")]
-        public object Aggregates { get; set; }
+        public object? Aggregates { get; set; }
 
         [DataMember(Name = "items")]
-        public dynamic Items { get; set; }
+        public dynamic? Items { get; set; }
 
         [DataMember(Name = "hasSubgroups")]
         public bool HasSubgroups { get; set; } // true if there are subgroups

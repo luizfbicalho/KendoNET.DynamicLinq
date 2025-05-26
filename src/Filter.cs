@@ -17,31 +17,31 @@ namespace KendoNET.DynamicLinq
         /// Gets or sets the name of the sorted field (property). Set to null if the Filters property is set.
         /// </summary>
         [DataMember(Name = "field")]
-        public string Field { get; set; }
+        public string Field { get; set; } = string.Empty;
 
         /// <summary>
         /// Gets or sets the filtering operator. Set to null if the Filters property is set.
         /// </summary>
         [DataMember(Name = "operator")]
-        public string Operator { get; set; }
+        public string Operator { get; set; } = string.Empty;
 
         /// <summary>
         /// Gets or sets the filtering value. Set to null if the Filters property is set.
         /// </summary>
         [DataMember(Name = "value")]
-        public object Value { get; set; }
+        public object? Value { get; set; }
 
         /// <summary>
         /// Gets or sets the filtering logic. Can be set to "or" or "and". Set to null unless Filters is set.
         /// </summary>
         [DataMember(Name = "logic")]
-        public string Logic { get; set; }
+        public string Logic { get; set; } = string.Empty;
 
         /// <summary>
         /// Gets or sets the child filter expressions. Set to null if there are no child expressions.
         /// </summary>
         [DataMember(Name = "filters")]
-        public IEnumerable<Filter> Filters { get; set; }
+        public IEnumerable<Filter> Filters { get; set; } = [];
 
         /// <summary>
         /// Mapping of Kendo DataSource filtering operators to Dynamic Linq
@@ -169,7 +169,7 @@ namespace KendoNET.DynamicLinq
         {
             if (Filters?.Any() == true)
             {
-                Expression compositeExpression = null;
+                Expression? compositeExpression = null;
                 if (Logic == "and")
                 {
                     foreach (var exp in Filters.Select(filter => filter.ToLambdaExpression<T>(parameter, filters)).ToArray())
@@ -188,7 +188,7 @@ namespace KendoNET.DynamicLinq
                     }
                 }
 
-                return compositeExpression;
+                return compositeExpression ?? Expression.Empty();
             }
 
             var currentPropertyType = GetLastPropertyType(typeof(T), Field);
@@ -198,10 +198,14 @@ namespace KendoNET.DynamicLinq
             }
 
             var propertyChains = Field.Split('.');
-            Expression left = null;
+            Expression? left = null;
             foreach (var f in propertyChains)
             {
                 left = Expression.PropertyOrField(parameter, f);
+            }
+            if (left == null)
+            {
+                throw new ArgumentException($"Field '{Field}' not found in type '{typeof(T).Name}'");
             }
 
             Expression right = Expression.Constant(Value, currentPropertyType);
@@ -220,6 +224,10 @@ namespace KendoNET.DynamicLinq
                     if (Operator == "contains" || Operator == "doesnotcontain")
                     {
                         var containsMethod = typeof(String).GetMethod("Contains", new[] { typeof(String) });
+                        if (containsMethod == null)
+                        {
+                            throw new InvalidOperationException("String.Contains method not found. Ensure the type is string or compatible.");
+                        }
                         var containsExpression = Expression.Call(left, containsMethod, right);
                         if (Operator == "contains")
                             resultExpression = Expression.AndAlso(Expression.Not(nullCheckExpression), containsExpression);
@@ -229,12 +237,20 @@ namespace KendoNET.DynamicLinq
                     else if (Operator == "startswith")
                     {
                         var startswithMethod = typeof(String).GetMethod("StartsWith", new[] { typeof(String) });
+                        if (startswithMethod == null)
+                        {
+                            throw new InvalidOperationException("String.StartsWith method not found. Ensure the type is string or compatible.");
+                        }
                         var startswithExpression = Expression.Call(left, startswithMethod, right);
                         resultExpression = Expression.AndAlso(Expression.Not(nullCheckExpression), startswithExpression);
                     }
                     else if (Operator == "endswith")
                     {
                         var endswithMethod = typeof(String).GetMethod("EndsWith", new[] { typeof(String) });
+                        if (endswithMethod == null)
+                        {
+                            throw new InvalidOperationException("String.EndsWith method not found. Ensure the type is string or compatible.");
+                        }
                         var endswithExpression = Expression.Call(left, endswithMethod, right);
                         resultExpression = Expression.AndAlso(Expression.Not(nullCheckExpression), endswithExpression);
                     }
@@ -261,6 +277,10 @@ namespace KendoNET.DynamicLinq
                 case "isnullorempty":
                 case "isnotnullorempty":
                     var nullOrEmptyMethod = typeof(String).GetMethod("IsNullOrEmpty", new[] { typeof(String) });
+                    if (nullOrEmptyMethod == null)
+                    {
+                        throw new InvalidOperationException("String.IsNullOrEmpty method not found. Ensure the type is string or compatible.");
+                    }
                     var nullOrEmptyExpression = Expression.Call(left, nullOrEmptyMethod, right);
                     if (Operator == "isnullorempty")
                         resultExpression = nullOrEmptyExpression;
@@ -308,7 +328,11 @@ namespace KendoNET.DynamicLinq
             /* Used in versions above 3.1.0 */
             foreach (string propertyName in path.Split('.'))
             {
-                PropertyInfo property = currentType.GetProperty(propertyName);
+                PropertyInfo? property = currentType.GetProperty(propertyName);
+                if (property == null)
+                {
+                    throw new ArgumentException($"Property '{propertyName}' not found in type '{currentType.Name}'");
+                }
                 currentType = property.PropertyType;
             }
 

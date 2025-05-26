@@ -4,7 +4,6 @@ using System.Linq;
 using System.Linq.Dynamic.Core;
 using System.Linq.Expressions;
 using System.Reflection;
-using System.Threading.Tasks;
 
 namespace KendoNET.DynamicLinq
 {
@@ -54,8 +53,8 @@ namespace KendoNET.DynamicLinq
             int skip,
             IEnumerable<Sort> sort,
             Filter filter,
-            IEnumerable<Aggregator> aggregates,
-            IEnumerable<Group> group)
+            IEnumerable<Aggregator>? aggregates,
+            IEnumerable<Group>? group)
         {
             var errors = new List<object>();
 
@@ -117,30 +116,9 @@ namespace KendoNET.DynamicLinq
             return result;
         }
 
-        /// <summary>
-        /// Asynchronously applies data processing (paging, sorting, filtering and aggregates) over IQueryable using Dynamic Linq.
-        /// </summary>
-        /// <typeparam name="T">The type of the IQueryable.</typeparam>
-        /// <param name="queryable">The IQueryable which should be processed.</param>
-        /// <param name="take">Specifies how many items to take. Configurable via the pageSize setting of the Kendo DataSource.</param>
-        /// <param name="skip">Specifies how many items to skip.</param>
-        /// <param name="sort">Specifies the current sort order.</param>
-        /// <param name="filter">Specifies the current filter.</param>
-        /// <param name="aggregates">Specifies the current aggregates.</param>
-        /// <param name="group">Specifies the current groups.</param>
-        /// <returns>A DataSourceResult object populated from the processed IQueryable.</returns>
-        public static Task<DataSourceResult<T>> ToDataSourceResultAsync<T>(this IQueryable<T> queryable,
-            int take,
-            int skip,
-            IEnumerable<Sort> sort,
-            Filter filter,
-            IEnumerable<Aggregator> aggregates = null,
-            IEnumerable<Group> group = null)
-        {
-            return Task.Run(() => queryable.ToDataSourceResult(take, skip, sort, filter, aggregates, group));
-        }
 
-        private static IQueryable<T> Filters<T>(IQueryable<T> queryable, Filter filter, List<object> errors)
+
+        public static IQueryable<T> Filters<T>(IQueryable<T> queryable, Filter filter, List<object> errors)
         {
             if (filter?.Logic != null)
             {
@@ -193,20 +171,24 @@ namespace KendoNET.DynamicLinq
             return queryable;
         }
 
-        internal static object Aggregates<T>(IQueryable<T> queryable, IEnumerable<Aggregator> aggregates)
+        public static object? Aggregates<T>(IQueryable<T> queryable, IEnumerable<Aggregator>? aggregates)
         {
             if (aggregates?.Any() == true)
             {
                 var objProps = new Dictionary<DynamicProperty, object>();
                 var groups = aggregates.GroupBy(g => g.Field);
-                Type type = null;
+                Type? type = null;
 
                 foreach (var group in groups)
                 {
-                    var fieldProps = new Dictionary<DynamicProperty, object>();
+                    var fieldProps = new Dictionary<DynamicProperty, object?>();
                     foreach (var aggregate in group)
                     {
                         var prop = typeof(T).GetProperty(aggregate.Field);
+                        if (prop == null)
+                        {
+                            throw new ArgumentException($"Property '{aggregate.Field}' does not exist on type '{typeof(T).Name}'.");
+                        }
                         var param = Expression.Parameter(typeof(T), "s");
                         var selector = aggregate.Aggregate == "count" && (Nullable.GetUnderlyingType(prop.PropertyType) != null)
                             ? Expression.Lambda(Expression.NotEqual(Expression.MakeMemberAccess(param, prop), Expression.Constant(null, prop.PropertyType)), param)
@@ -225,9 +207,12 @@ namespace KendoNET.DynamicLinq
                     var fieldObj = Activator.CreateInstance(type);
                     foreach (var p in fieldProps.Keys)
                     {
-                        type.GetProperty(p.Name).SetValue(fieldObj, fieldProps[p], null);
+                        type.GetProperty(p.Name)?.SetValue(fieldObj, fieldProps[p], null);
                     }
-
+                    if (fieldObj == null)
+                    {
+                        throw new InvalidOperationException($"Failed to create instance of type '{type.Name}'.");
+                    }
                     objProps.Add(new DynamicProperty(group.Key, fieldObj.GetType()), fieldObj);
                 }
 
@@ -236,7 +221,7 @@ namespace KendoNET.DynamicLinq
                 var obj = Activator.CreateInstance(type);
                 foreach (var p in objProps.Keys)
                 {
-                    type.GetProperty(p.Name).SetValue(obj, objProps[p], null);
+                    type.GetProperty(p.Name)?.SetValue(obj, objProps[p], null);
                 }
 
                 return obj;
@@ -245,7 +230,7 @@ namespace KendoNET.DynamicLinq
             return null;
         }
 
-        private static IQueryable<T> Sort<T>(IQueryable<T> queryable, IEnumerable<Sort> sort)
+        public static IQueryable<T> Sort<T>(IQueryable<T> queryable, IEnumerable<Sort> sort)
         {
             if (sort?.Any() == true)
             {
@@ -259,7 +244,7 @@ namespace KendoNET.DynamicLinq
             return queryable;
         }
 
-        private static IQueryable<T> Page<T>(IQueryable<T> queryable, int take, int skip)
+        public static IQueryable<T> Page<T>(IQueryable<T> queryable, int take, int skip)
         {
             return queryable.Skip(skip).Take(take);
         }
@@ -318,7 +303,7 @@ namespace KendoNET.DynamicLinq
                         new Filter
                         {
                             Field = filter.Field,
-                            Filters = filter.Filters,
+                            Filters = filter.Filters??[],
                             Value = new DateTime(localTime.Year, localTime.Month, localTime.Day, 0, 0, 0),
                             Operator = "gte"
                         },
@@ -326,7 +311,7 @@ namespace KendoNET.DynamicLinq
                         new Filter
                         {
                             Field = filter.Field,
-                            Filters = filter.Filters,
+                            Filters = filter.Filters??[],
                             Value = new DateTime(localTime.Year, localTime.Month, localTime.Day, 23, 59, 59),
                             Operator = "lte"
                         }
@@ -355,7 +340,7 @@ namespace KendoNET.DynamicLinq
                 //by default make dir desc
                 var sortByObject = new Sort { Dir = "desc" };
 
-                PropertyInfo propertyInfo;
+                PropertyInfo? propertyInfo;
                 //look for property that is called id
                 if (properties.Any(p => string.Equals(p.Name, "id", StringComparison.OrdinalIgnoreCase)))
                 {

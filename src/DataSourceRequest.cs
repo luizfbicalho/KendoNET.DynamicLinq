@@ -17,21 +17,21 @@ namespace KendoNET.DynamicLinq
         /// <summary>
         /// Specifies the requested sort order.
         /// </summary>
-        public IEnumerable<Sort> Sort { get; set; }
+        public IEnumerable<Sort> Sort { get; set; } = [];
 
         /// <summary>
         /// Specifies the requested filter.
         /// </summary>
-        public Filter Filter { get; set; }
+        public Filter Filter { get; set; } = new();
 
         /// <summary>
         /// Specifies the requested grouping .
         /// </summary>
-        public IEnumerable<Group> Group { get; set; }
+        public IEnumerable<Group>? Group { get; set; }
 
         /// <summary>
         /// Specifies the requested aggregators.
         /// </summary>
-        public IEnumerable<Aggregator> Aggregate { get; set; }
+        public IEnumerable<Aggregator>? Aggregate { get; set; }
     }
 }

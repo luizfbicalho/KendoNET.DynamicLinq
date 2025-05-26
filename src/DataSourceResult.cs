@@ -14,17 +14,17 @@ namespace KendoNET.DynamicLinq
         /// <summary>
         /// Represents a single page of processed data.
         /// </summary>
-        public IEnumerable<T> Data { get; set; }
+        public IEnumerable<T> Data { get; set; } = [];
 
         /// <summary>
         /// Represents a single page of processed grouped data.
         /// </summary>
-        public IEnumerable<GroupResult> Groups { get; set; }
+        public IEnumerable<GroupResult>? Groups { get; set; } = [];
 
         /// <summary>
         /// Represents a requested aggregates.
         /// </summary>
-        public object Aggregates { get; set; }
+        public object? Aggregates { get; set; }
 
         /// <summary>
         /// The total number of records available.
@@ -34,7 +34,7 @@ namespace KendoNET.DynamicLinq
         /// <summary>
         /// Represents error information from server-side.
         /// </summary>
-        public object Errors { get; set; }
+        public object? Errors { get; set; }
 
         /// <summary>
         /// Used by the KnownType attribute which is required for WCF serialization support
@@ -42,8 +42,8 @@ namespace KendoNET.DynamicLinq
         /// <returns></returns>
         private static Type[] GetKnownTypes()
         {
-            var assembly = AppDomain.CurrentDomain.GetAssemblies().FirstOrDefault(a => a.FullName.StartsWith("DynamicClasses"));
-            return assembly == null ? new Type[0] : assembly.GetTypes().Where(t => t.Name.StartsWith("DynamicClass")).ToArray();
+            var assembly = AppDomain.CurrentDomain.GetAssemblies().FirstOrDefault(a => a?.FullName?.StartsWith("DynamicClasses") ?? false);
+            return assembly == null ? [] : assembly.GetTypes().Where(t => t.Name.StartsWith("DynamicClass")).ToArray();
         }
     }
 }

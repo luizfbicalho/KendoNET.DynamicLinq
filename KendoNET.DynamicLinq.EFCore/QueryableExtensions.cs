@@ -1,0 +1,119 @@
+﻿using System.Collections.Generic;
+using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
+
+namespace KendoNET.DynamicLinq.EFCore
+{
+    public static class QueryableExtensionsAsync
+    {
+
+        /// <summary>
+        /// Applies data processing (paging, sorting and filtering) over IQueryable using Dynamic Linq.
+        /// </summary>
+        /// <typeparam name="T">The type of the IQueryable.</typeparam>
+        /// <param name="queryable">The IQueryable which should be processed.</param>
+        /// <param name="take">Specifies how many items to take. Configurable via the pageSize setting of the Kendo DataSource.</param>
+        /// <param name="skip">Specifies how many items to skip.</param>
+        /// <param name="sort">Specifies the current sort order.</param>
+        /// <param name="filter">Specifies the current filter.</param>
+        /// <returns>A DataSourceResult object populated from the processed IQueryable.</returns>
+        public static Task<DataSourceResult<T>> ToDataSourceResultAsync<T>(this IQueryable<T> queryable, int take, int skip, IEnumerable<Sort> sort, Filter filter, CancellationToken ct)
+        {
+            return queryable.ToDataSourceResultAsync(take, skip, sort, filter, null, null, ct);
+        }
+
+        /// <summary>
+        ///  Applies data processing (paging, sorting and filtering) over IQueryable using Dynamic Linq.
+        /// </summary>
+        /// <typeparam name="T">The type of the IQueryable.</typeparam>
+        /// <param name="queryable">The IQueryable which should be processed.</param>
+        /// <param name="request">The DataSourceRequest object containing take, skip, sort, filter, aggregates, and groups data.</param>
+        /// <returns>A DataSourceResult object populated from the processed IQueryable.</returns>
+        public static Task<DataSourceResult<T>> ToDataSourceResultAsync<T>(this IQueryable<T> queryable, DataSourceRequest request, CancellationToken ct)
+        {
+            return queryable.ToDataSourceResultAsync(request.Take, request.Skip, request.Sort, request.Filter, request.Aggregate, request.Group, ct);
+        }
+
+        /// <summary>
+        /// Applies data processing (paging, sorting, filtering and aggregates) over IQueryable using Dynamic Linq.
+        /// </summary>
+        /// <typeparam name="T">The type of the IQueryable.</typeparam>
+        /// <param name="queryable">The IQueryable which should be processed.</param>
+        /// <param name="take">Specifies how many items to take. Configurable via the pageSize setting of the Kendo DataSource.</param>
+        /// <param name="skip">Specifies how many items to skip.</param>
+        /// <param name="sort">Specifies the current sort order.</param>
+        /// <param name="filter">Specifies the current filter.</param>
+        /// <param name="aggregates">Specifies the current aggregates.</param>
+        /// <param name="group">Specifies the current groups.</param>
+        /// <returns>A DataSourceResult object populated from the processed IQueryable.</returns>
+        public static async Task<DataSourceResult<T>> ToDataSourceResultAsync<T>(this IQueryable<T> queryable,
+            int take,
+            int skip,
+            IEnumerable<Sort> sort,
+            Filter filter,
+            IEnumerable<Aggregator>? aggregates,
+            IEnumerable<Group>? group,
+            CancellationToken ct)
+        {
+            var errors = new List<object>();
+
+            // Filter the data first
+            queryable = QueryableExtensions.Filters(queryable, filter, errors);
+
+            // Calculate the total number of records (needed for paging)
+            var total = await queryable.CountAsync(ct);
+
+            // Calculate the aggregates
+            var aggregate = QueryableExtensions.Aggregates(queryable, aggregates);
+            if (group?.Any() == true)
+            {
+                //if(sort == null) sort = GetDefaultSort(queryable.ElementType, sort);
+                if (sort == null)
+                    sort = new List<Sort>();
+                foreach (var source in group.Reverse())
+                {
+                    sort = sort.Append(new Sort
+                    {
+                        Field = source.Field,
+                        Dir = source.Dir
+                    });
+                }
+            }
+
+            // Sort the data
+            queryable = QueryableExtensions.Sort(queryable, sort);
+
+            // Finally page the data
+            if (take > 0)
+            {
+                queryable = QueryableExtensions.Page(queryable, take, skip);
+            }
+
+            var result = new DataSourceResult<T>
+            {
+                Total = total,
+                Aggregates = aggregate
+            };
+
+            // Group By
+            if (group?.Any() == true)
+            {
+                result.Groups = queryable.GroupByMany(group);
+            }
+            else
+            {
+                result.Data = await queryable.ToListAsync(ct);
+            }
+
+            // Set errors if any
+            if (errors.Count > 0)
+            {
+                result.Errors = errors;
+            }
+
+            return result;
+        }
+    }
+}

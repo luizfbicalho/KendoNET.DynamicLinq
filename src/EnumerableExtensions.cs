@@ -36,7 +36,10 @@ namespace KendoNET.DynamicLinq
                 // Get selector
                 var selector = groupSelectors[0];
                 var nextSelectors = groupSelectors.Skip(1).ToArray();   // Reduce the list recursively until zero
-
+                if (selector.Selector == null)
+                {
+                    throw new ArgumentException("Selector cannot be null.", nameof(selector.Selector));
+                }
                 // Group by and return                
                 return elements.GroupBy(selector.Selector).Select(
                             g => new GroupResult
