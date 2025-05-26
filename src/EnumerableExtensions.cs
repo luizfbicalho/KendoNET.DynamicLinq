@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Dynamic.Core;
@@ -7,7 +7,7 @@ namespace KendoNET.DynamicLinq
 {
     public static class EnumerableExtensions
     {
-        public static dynamic GroupByMany<TElement>(this IEnumerable<TElement> elements, IEnumerable<Group> groupSelectors)
+        public static IEnumerable<GroupResult> GroupByMany<TElement>(this IEnumerable<TElement> elements, IEnumerable<Group> groupSelectors)
         {
             // Create a new list of Kendo Group Selectors 
             var selectors = new List<GroupSelector<TElement>>(groupSelectors.Count());
@@ -29,7 +29,7 @@ namespace KendoNET.DynamicLinq
             return elements.GroupByMany(selectors.ToArray());
         }
 
-        public static dynamic GroupByMany<TElement>(this IEnumerable<TElement> elements, params GroupSelector<TElement>[] groupSelectors)
+        public static IEnumerable<GroupResult> GroupByMany<TElement>(this IEnumerable<TElement> elements, params GroupSelector<TElement>[] groupSelectors)
         {
             if (groupSelectors.Length > 0)
             {
@@ -38,7 +38,7 @@ namespace KendoNET.DynamicLinq
                 var nextSelectors = groupSelectors.Skip(1).ToArray();   // Reduce the list recursively until zero
 
                 // Group by and return                
-                return  elements.GroupBy(selector.Selector).Select(
+                return elements.GroupBy(selector.Selector).Select(
                             g => new GroupResult
                             {
                                 Value = g.Key,
@@ -51,7 +51,15 @@ namespace KendoNET.DynamicLinq
             }
 
             // If there are not more group selectors return data
-            return elements;
+            return elements.Select(s => new GroupResult
+            {
+                Aggregates = QueryableExtensions.Aggregates(elements.AsQueryable(), null),
+                Items = s,
+                Count = 1,
+                HasSubgroups = false,
+                SelectorField = string.Empty,
+                Value = s
+            });
         }
     }
 }

@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFrameworks>netstandard1.6;netstandard2.0;netstandard2.1</TargetFrameworks>
+    <TargetFrameworks>net8.0</TargetFrameworks>
     <RootNamespace>KendoNET.DynamicLinq</RootNamespace>
   </PropertyGroup>
 
@@ -9,16 +9,10 @@
     <PackageId>KendoNET.DynamicLinq</PackageId>
     <Title>Kendo.DynamicLinqCore</Title>
     <Authors>CoCo Lin</Authors>
-    <Description>Kendo.DynamicLinqCore implements server paging, filtering, sorting, grouping and aggregating to Kendo UI via Dynamic Linq for .Net Core App(1.x ~ 3.x).
+    <Description>Kendo.DynamicLinqCore implements server paging, filtering, sorting, grouping and aggregating to Kendo UI via Dynamic Linq for .Net 8.0.
 
       Supported platforms:
-
-      - .NET Standard 1.6
-      - .NET Standard 2.0
-      - .NET Standard 2.1
-      - .NET Core 1.0 ~ .NET Core 1.1
-      - .NET Core 2.0 ~ .NET Core 2.2
-      - .NET Core 3.0 ~ .NET Core 3.1
+      - .NET Core 8.0
 
     </Description>
     <PackageReleaseNotes>
