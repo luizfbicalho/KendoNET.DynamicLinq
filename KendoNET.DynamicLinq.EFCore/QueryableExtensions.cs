@@ -100,7 +100,7 @@ namespace KendoNET.DynamicLinq.EFCore
             // Group By
             if (group?.Any() == true)
             {
-                result.Groups = queryable.GroupByMany(group);
+                result.Groups = await queryable.GroupByMany(group).AsQueryable().ToListAsync(ct);
             }
             else
             {

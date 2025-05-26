@@ -1,4 +1,5 @@
-﻿using System.Runtime.Serialization;
+﻿using System.Collections.Generic;
+using System.Runtime.Serialization;
 
 namespace KendoNET.DynamicLinq
 {
@@ -24,7 +25,7 @@ namespace KendoNET.DynamicLinq
         public object? Aggregates { get; set; }
 
         [DataMember(Name = "items")]
-        public dynamic? Items { get; set; }
+        public IEnumerable<GroupResult>? Items { get; set; }
 
         [DataMember(Name = "hasSubgroups")]
         public bool HasSubgroups { get; set; } // true if there are subgroups

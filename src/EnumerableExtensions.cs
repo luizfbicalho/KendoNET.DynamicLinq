@@ -57,7 +57,6 @@ namespace KendoNET.DynamicLinq
             return elements.Select(s => new GroupResult
             {
                 Aggregates = QueryableExtensions.Aggregates(elements.AsQueryable(), null),
-                Items = s,
                 Count = 1,
                 HasSubgroups = false,
                 SelectorField = string.Empty,
