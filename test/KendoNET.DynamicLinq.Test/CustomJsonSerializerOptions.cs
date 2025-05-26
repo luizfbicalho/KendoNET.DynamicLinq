@@ -1,4 +1,4 @@
-#if NETCOREAPP3_1
+﻿
 
 using System;
 using System.Text.Json;
@@ -61,5 +61,3 @@ namespace KendoNET.DynamicLinq.Test
             throw new InvalidOperationException("Should not get here.");
     }
 }
-
-#endif

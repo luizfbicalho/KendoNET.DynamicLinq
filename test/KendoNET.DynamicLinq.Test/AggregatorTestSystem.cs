@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
+using System.Text.Json;
 using KendoNET.DynamicLinq.Test.Data;
-using Newtonsoft.Json;
 using NUnit.Framework;
 using NUnit.Framework.Legacy;
 
@@ -8,10 +8,12 @@ using NUnit.Framework.Legacy;
 namespace KendoNET.DynamicLinq.Test
 {
     [TestFixture]
-    public class AggregatorTest
+    public class AggregatorTestSystem
     {
         private MockContext _dbContext;
 
+
+        private static JsonSerializerOptions jsonSerializerOptions = CustomJsonSerializerOptions.DefaultOptions;
 
 
         public static IEnumerable<DataSourceRequest> DataSourceRequestWithAggregateSalarySum
@@ -19,7 +21,7 @@ namespace KendoNET.DynamicLinq.Test
             get
             {
 
-                yield return JsonConvert.DeserializeObject<DataSourceRequest>("{\"take\":10,\"skip\":0,\"aggregate\":[{\"field\":\"Salary\",\"aggregate\":\"sum\"}]}");
+                yield return JsonSerializer.Deserialize<DataSourceRequest>("{\"take\":10,\"skip\":0,\"aggregate\":[{\"field\":\"Salary\",\"aggregate\":\"sum\"}]}", jsonSerializerOptions);
 
             }
         }
@@ -28,9 +30,9 @@ namespace KendoNET.DynamicLinq.Test
         {
             get
             {
-
-                yield return JsonConvert.DeserializeObject<DataSourceRequest>(
-                    "{\"take\":10,\"skip\":0,\"aggregate\":[{\"field\":\"Salary\",\"aggregate\":\"sum\"},{\"field\":\"Salary\",\"aggregate\":\"average\"},{\"field\":\"Number\",\"aggregate\":\"max\"}]}");
+                yield return JsonSerializer.Deserialize<DataSourceRequest>(
+                    "{\"take\":10,\"skip\":0,\"aggregate\":[{\"field\":\"Salary\",\"aggregate\":\"sum\"},{\"field\":\"Salary\",\"aggregate\":\"average\"},{\"field\":\"Number\",\"aggregate\":\"max\"}]}",
+                    jsonSerializerOptions);
 
             }
         }
