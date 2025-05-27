@@ -67,29 +67,7 @@ namespace KendoNET.DynamicLinq
             // Calculate the aggregates
             var aggregate = Aggregates(queryable, aggregates);
 
-            if (group?.Any() == true)
-            {
-                //if(sort == null) sort = GetDefaultSort(queryable.ElementType, sort);
-                if (sort == null) sort = new List<Sort>();
-
-                foreach (var source in group.Reverse())
-                {
-                    sort = sort.Append(new Sort
-                    {
-                        Field = source.Field,
-                        Dir = source.Dir
-                    });
-                }
-            }
-
-            // Sort the data
-            queryable = Sort(queryable, sort);
-
-            // Finally page the data
-            if (take > 0)
-            {
-                queryable = Page(queryable, take, skip);
-            }
+            queryable = UpdateQuery(queryable, take, skip, ref sort, group);
 
             var result = new DataSourceResult<T>
             {
@@ -116,6 +94,34 @@ namespace KendoNET.DynamicLinq
             return result;
         }
 
+
+        public static IQueryable<T> UpdateQuery<T>(IQueryable<T> queryable, int take, int skip, ref IEnumerable<Sort> sort, IEnumerable<Group>? group)
+        {
+            if (group?.Any() == true)
+            {
+                //if(sort == null) sort = GetDefaultSort(queryable.ElementType, sort);
+                if (sort == null)
+                    sort = new List<Sort>();
+                foreach (var source in group.Reverse())
+                {
+                    sort = sort.Append(new Sort
+                    {
+                        Field = source.Field,
+                        Dir = source.Dir
+                    });
+                }
+            }
+
+            // Sort the data
+            queryable = QueryableExtensions.Sort(queryable, sort);
+
+            // Finally page the data
+            if (take > 0)
+            {
+                queryable = QueryableExtensions.Page(queryable, take, skip);
+            }
+            return queryable;
+        }
 
 
         public static IQueryable<T> Filters<T>(IQueryable<T> queryable, Filter filter, List<object> errors)

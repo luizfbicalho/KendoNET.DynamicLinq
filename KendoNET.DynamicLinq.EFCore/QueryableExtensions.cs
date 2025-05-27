@@ -67,29 +67,7 @@ namespace KendoNET.DynamicLinq.EFCore
 
             // Calculate the aggregates
             var aggregate = QueryableExtensions.Aggregates(queryable, aggregates);
-            if (group?.Any() == true)
-            {
-                //if(sort == null) sort = GetDefaultSort(queryable.ElementType, sort);
-                if (sort == null)
-                    sort = new List<Sort>();
-                foreach (var source in group.Reverse())
-                {
-                    sort = sort.Append(new Sort
-                    {
-                        Field = source.Field,
-                        Dir = source.Dir
-                    });
-                }
-            }
-
-            // Sort the data
-            queryable = QueryableExtensions.Sort(queryable, sort);
-
-            // Finally page the data
-            if (take > 0)
-            {
-                queryable = QueryableExtensions.Page(queryable, take, skip);
-            }
+            queryable = QueryableExtensions.UpdateQuery(queryable, take, skip, ref sort, group);
 
             var result = new DataSourceResult<T>
             {
