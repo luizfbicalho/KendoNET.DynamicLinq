@@ -67,7 +67,7 @@ namespace KendoNET.DynamicLinq.EFCore
 
             // Calculate the aggregates
             var aggregate = QueryableExtensions.Aggregates(queryable, aggregates);
-            queryable = QueryableExtensions.UpdateQuery(queryable, take, skip, ref sort, group);
+            queryable = QueryableExtensions.UpdateQuery(queryable, take, skip, sort, group);
 
             var result = new DataSourceResult<T>
             {

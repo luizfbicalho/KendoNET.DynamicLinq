@@ -67,7 +67,7 @@ namespace KendoNET.DynamicLinq
             // Calculate the aggregates
             var aggregate = Aggregates(queryable, aggregates);
 
-            queryable = UpdateQuery(queryable, take, skip, ref sort, group);
+            queryable = UpdateQuery(queryable, take, skip, sort, group);
 
             var result = new DataSourceResult<T>
             {
@@ -95,7 +95,7 @@ namespace KendoNET.DynamicLinq
         }
 
 
-        public static IQueryable<T> UpdateQuery<T>(IQueryable<T> queryable, int take, int skip, ref IEnumerable<Sort> sort, IEnumerable<Group>? group)
+        public static IQueryable<T> UpdateQuery<T>(IQueryable<T> queryable, int take, int skip, IEnumerable<Sort> sort, IEnumerable<Group>? group)
         {
             if (group?.Any() == true)
             {
