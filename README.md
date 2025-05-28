@@ -6,18 +6,18 @@
 
 ## Description
 
-KendoNET.DynamicLinq implements server paging, filtering, sorting, grouping, and aggregating to Kendo UI via Dynamic Linq for .Net Core App(1.x ~ 3.x).
+KendoNET.DynamicLinq implements server paging, filtering, sorting, grouping, and aggregating to Kendo UI via Dynamic Linq for .Net 8.
 
 ## Prerequisites
 
-### .Net Core 1 ~ 2
+### .Net 8 Newtonsoft.Json
 
 - None
 
-### .Net Core 3
+### .Net 8 System.Text.Json
 
 - You must add custom `ObjectToInferredTypesConverter` to your `JsonSerializerOptions` since `System.Text.Json` didn't deserialize inferred type to object properties now, see
-  the [sample code](https://github.com/linmasaki/KendoNET.DynamicLinq/blob/master/test/KendoNET.DynamicLinq.Tests/CustomJsonSerializerOptions.cs)
+  the [sample code](https://github.com/luizfbicalho/KendoNET.DynamicLinq/blob/master/test/KendoNET.DynamicLinq.Tests/CustomJsonSerializerOptions.cs)
   and [reference](https://docs.microsoft.com/en-gb/dotnet/standard/serialization/system-text-json-converters-how-to#deserialize-inferred-types-to-object-properties).
 
 ## Usage
@@ -165,7 +165,7 @@ public class MyContext : DbContext
 2. Switch to project root directory(src\KendoNET.DynamicLinq).
 3. Run "dotnet restore"
 4. Run "dotnet pack --configuration Release"
-5. Add `<repository type="git" url="https://github.com/linmasaki/KendoNET.DynamicLinq.git" />` to package metadata of nupkg to show repository URL at Nuget
+5. Add `<repository type="git" url="https://github.com/luizfbicalho/KendoNET.DynamicLinq.git" />` to package metadata of nupkg to show repository URL at Nuget
 
 ## Note
 
