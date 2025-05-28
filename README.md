@@ -2,7 +2,7 @@
 
 [![Version](https://img.shields.io/nuget/vpre/KendoNET.DynamicLinq.svg)](https://www.nuget.org/packages/KendoNET.DynamicLinq)
 [![Downloads](https://img.shields.io/nuget/dt/KendoNET.DynamicLinq.svg)](https://www.nuget.org/packages/KendoNET.DynamicLinq)
-[![.NET Standard](https://img.shields.io/badge/.NET%20Standard-%3E%3D%201.6-red.svg)](#)
+[![.NET 8.0](https://img.shields.io/badge/.NET-8.0-red)](#)
 
 ## Description
 
