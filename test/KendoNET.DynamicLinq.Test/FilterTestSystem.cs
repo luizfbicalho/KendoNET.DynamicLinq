@@ -13,7 +13,7 @@ namespace KendoNET.DynamicLinq.Test
     {
         private MockContext _dbContext;
 
-        private JsonSerializerOptions jsonSerializerOptions = CustomJsonSerializerOptions.DefaultOptions;
+        private readonly JsonSerializerOptions jsonSerializerOptions = CustomJsonSerializerOptions.DefaultOptions;
 
 
         [SetUp]

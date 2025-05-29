@@ -7,6 +7,10 @@ namespace KendoNET.DynamicLinq
 {
     public static class EnumerableExtensions
     {
+        /// <summary>
+        /// Group elements by multiple selectors.
+        /// </summary>
+        /// <exception cref="OverflowException"></exception>
         public static IEnumerable<GroupResult> GroupByMany<TElement>(this IEnumerable<TElement> elements, IEnumerable<Group> groupSelectors)
         {
             // Create a new list of Kendo Group Selectors 
@@ -29,6 +33,11 @@ namespace KendoNET.DynamicLinq
             return elements.GroupByMany(selectors.ToArray());
         }
 
+        /// <summary>
+        /// Group elements by multiple selectors.
+        /// </summary>
+        /// <exception cref="ArgumentException"></exception>
+        /// <exception cref="OverflowException"></exception>
         public static IEnumerable<GroupResult> GroupByMany<TElement>(this IEnumerable<TElement> elements, params GroupSelector<TElement>[] groupSelectors)
         {
             if (groupSelectors.Length > 0)

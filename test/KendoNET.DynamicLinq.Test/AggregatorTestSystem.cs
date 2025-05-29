@@ -13,7 +13,7 @@ namespace KendoNET.DynamicLinq.Test
         private MockContext _dbContext;
 
 
-        private static JsonSerializerOptions jsonSerializerOptions = CustomJsonSerializerOptions.DefaultOptions;
+        private static readonly JsonSerializerOptions jsonSerializerOptions = CustomJsonSerializerOptions.DefaultOptions;
 
 
         public static IEnumerable<DataSourceRequest> DataSourceRequestWithAggregateSalarySum

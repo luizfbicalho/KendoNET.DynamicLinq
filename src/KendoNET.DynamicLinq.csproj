@@ -5,12 +5,13 @@
     <RootNamespace>KendoNET.DynamicLinq</RootNamespace>
     <Nullable>enable</Nullable>
     <WarningsAsErrors>Nullable</WarningsAsErrors>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
   </PropertyGroup>
 
   <PropertyGroup>
-    <PackageId>KendoNET.DynamicLinq</PackageId>
+    <PackageId>KendoNET.luizfbicalho.DynamicLinq</PackageId>
     <Title>Kendo.DynamicLinqCore</Title>
-    <Authors>CoCo Lin</Authors>
+    <Authors>Luiz Bicalho</Authors>
     <Description>Kendo.DynamicLinqCore implements server paging, filtering, sorting, grouping and aggregating to Kendo UI via Dynamic Linq for .Net 8.0.
 
       Supported platforms:
@@ -22,22 +23,62 @@
       1. Fix the issue that filter will throw exception if decimal property is optional.
       2. Add asynchronous method of retrieving data(This feature is still in the experimental stage, not recommend using it on your product).
 
-      Full changelog: https://github.com/linmasaki/Kendo.DynamicLinqCore/blob/master/CHANGELOG.md
+      Full changelog: https://github.com/luizfbicalho/Kendo.DynamicLinqCore/blob/master/CHANGELOG.md
 
     </PackageReleaseNotes>
-    <PackageProjectUrl>https://github.com/linmasaki/Kendo.DynamicLinqCore</PackageProjectUrl>
-    <RepositoryUrl>https://github.com/linmasaki/Kendo.DynamicLinqCore</RepositoryUrl>
-    <PackageIconUrl>https://raw.githubusercontent.com/linmasaki/CoCoPackageIcon/master/cocodotnet64.png</PackageIconUrl>
+    <PackageProjectUrl>https://github.com/luizfbicalho/Kendo.DynamicLinqCore</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/luizfbicalho/Kendo.DynamicLinqCore</RepositoryUrl>
+    <PackageIconUrl>https://raw.githubusercontent.com/luizfbicalho/CoCoPackageIcon/master/cocodotnet64.png</PackageIconUrl>
     <PackageIcon>Icon.png</PackageIcon>
     <PackageTags>netcore netstandard kendo kendo-ui linq dynamic</PackageTags>
     <PackageVersion>3.1.1</PackageVersion>
     <Version>3.1.1</Version>
-    <Copyright>Copyright © 2017-2020 CoCo Lin</Copyright>
+    <Copyright>Copyright © 2017-2020 </Copyright>
     <PackageLicenseFile>LICENSE</PackageLicenseFile>
   </PropertyGroup>
 
   <ItemGroup>
     <PackageReference Include="System.Linq.Dynamic.Core" Version="1.6.4" />
+  </ItemGroup>
+
+
+  <ItemGroup>
+    <PackageReference Include="AsyncFixer" Version="1.6.0">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="Microsoft.CodeAnalysis.NetAnalyzers" Version="10.0.0-preview.25258.110">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="Microsoft.VisualStudio.Threading.Analyzers" Version="17.14.15">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="nerdbank.gitversioning" Version="3.8.38-alpha">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="Nullable.Extended.Analyzer" Version="1.15.6581">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="Roslynator.Analyzers" Version="4.13.1">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="SecurityCodeScan.VS2019" Version="5.6.7">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="SonarAnalyzer.CSharp" Version="10.10.0.116381">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="Tetractic.CodeAnalysis.ExceptionAnalyzers" Version="1.4.7">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
   </ItemGroup>
 
 </Project>

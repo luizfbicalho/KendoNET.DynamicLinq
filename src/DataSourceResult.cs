@@ -40,6 +40,8 @@ namespace KendoNET.DynamicLinq
         /// Used by the KnownType attribute which is required for WCF serialization support
         /// </summary>
         /// <returns></returns>
+        /// <exception cref="AppDomainUnloadedException"></exception>
+        /// <exception cref="System.Reflection.ReflectionTypeLoadException"></exception>
         private static Type[] GetKnownTypes()
         {
             var assembly = AppDomain.CurrentDomain.GetAssemblies().FirstOrDefault(a => a?.FullName?.StartsWith("DynamicClasses") ?? false);

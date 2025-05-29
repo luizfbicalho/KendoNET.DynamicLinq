@@ -1,5 +1,7 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
@@ -19,6 +21,21 @@ namespace KendoNET.DynamicLinq.EFCore
         /// <param name="sort">Specifies the current sort order.</param>
         /// <param name="filter">Specifies the current filter.</param>
         /// <returns>A DataSourceResult object populated from the processed IQueryable.</returns>
+        /// <exception cref="ArgumentException"></exception>
+        /// <exception cref="AmbiguousMatchException"></exception>
+        /// <exception cref="NotSupportedException"></exception>
+        /// <exception cref="TargetInvocationException"></exception>
+        /// <exception cref="MethodAccessException"></exception>
+        /// <exception cref="MemberAccessException"></exception>
+        /// <exception cref="System.Runtime.InteropServices.InvalidComObjectException"></exception>
+        /// <exception cref="System.Runtime.InteropServices.COMException"></exception>
+        /// <exception cref="TypeLoadException"></exception>
+        /// <exception cref="InvalidOperationException"></exception>
+        /// <exception cref="TargetException"></exception>
+        /// <exception cref="TargetParameterCountException"></exception>
+        /// <exception cref="OverflowException"></exception>
+        /// <exception cref="OutOfMemoryException"></exception>
+        /// <exception cref="OperationCanceledException"></exception>
         public static Task<DataSourceResult<T>> ToDataSourceResultAsync<T>(this IQueryable<T> queryable, int take, int skip, IEnumerable<Sort> sort, Filter filter, CancellationToken ct)
         {
             return queryable.ToDataSourceResultAsync(take, skip, sort, filter, null, null, ct);
@@ -31,6 +48,21 @@ namespace KendoNET.DynamicLinq.EFCore
         /// <param name="queryable">The IQueryable which should be processed.</param>
         /// <param name="request">The DataSourceRequest object containing take, skip, sort, filter, aggregates, and groups data.</param>
         /// <returns>A DataSourceResult object populated from the processed IQueryable.</returns>
+        /// <exception cref="ArgumentException"></exception>
+        /// <exception cref="AmbiguousMatchException"></exception>
+        /// <exception cref="NotSupportedException"></exception>
+        /// <exception cref="TargetInvocationException"></exception>
+        /// <exception cref="MethodAccessException"></exception>
+        /// <exception cref="MemberAccessException"></exception>
+        /// <exception cref="System.Runtime.InteropServices.InvalidComObjectException"></exception>
+        /// <exception cref="System.Runtime.InteropServices.COMException"></exception>
+        /// <exception cref="TypeLoadException"></exception>
+        /// <exception cref="InvalidOperationException"></exception>
+        /// <exception cref="TargetException"></exception>
+        /// <exception cref="TargetParameterCountException"></exception>
+        /// <exception cref="OverflowException"></exception>
+        /// <exception cref="OutOfMemoryException"></exception>
+        /// <exception cref="OperationCanceledException"></exception>
         public static Task<DataSourceResult<T>> ToDataSourceResultAsync<T>(this IQueryable<T> queryable, DataSourceRequest request, CancellationToken ct)
         {
             return queryable.ToDataSourceResultAsync(request.Take, request.Skip, request.Sort, request.Filter, request.Aggregate, request.Group, ct);
@@ -48,6 +80,21 @@ namespace KendoNET.DynamicLinq.EFCore
         /// <param name="aggregates">Specifies the current aggregates.</param>
         /// <param name="group">Specifies the current groups.</param>
         /// <returns>A DataSourceResult object populated from the processed IQueryable.</returns>
+        /// <exception cref="ArgumentException"></exception>
+        /// <exception cref="AmbiguousMatchException"></exception>
+        /// <exception cref="NotSupportedException"></exception>
+        /// <exception cref="TargetInvocationException"></exception>
+        /// <exception cref="MethodAccessException"></exception>
+        /// <exception cref="MemberAccessException"></exception>
+        /// <exception cref="System.Runtime.InteropServices.InvalidComObjectException"></exception>
+        /// <exception cref="System.Runtime.InteropServices.COMException"></exception>
+        /// <exception cref="TypeLoadException"></exception>
+        /// <exception cref="InvalidOperationException"></exception>
+        /// <exception cref="TargetException"></exception>
+        /// <exception cref="TargetParameterCountException"></exception>
+        /// <exception cref="OverflowException"></exception>
+        /// <exception cref="OutOfMemoryException"></exception>
+        /// <exception cref="OperationCanceledException"></exception>
         public static async Task<DataSourceResult<T>> ToDataSourceResultAsync<T>(this IQueryable<T> queryable,
             int take,
             int skip,

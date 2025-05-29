@@ -69,11 +69,12 @@ namespace KendoNET.DynamicLinq
         /// <summary>
         /// These operators only for string type.
         /// </summary>
-        private static readonly string[] StringOperators = new[] { "startswith", "endswith", "contains", "doesnotcontain", "isempty", "isnotempty", "isnullorempty", "isnotnullorempty" };
+        private static readonly string[] StringOperators = ["startswith", "endswith", "contains", "doesnotcontain", "isempty", "isnotempty", "isnullorempty", "isnotnullorempty"];
 
         /// <summary>
         /// Get a flattened list of all child filter expressions.
         /// </summary>
+        /// <exception cref="NotSupportedException"></exception>
         public IList<Filter> All()
         {
             var filters = new List<Filter>();
@@ -81,7 +82,10 @@ namespace KendoNET.DynamicLinq
 
             return filters;
         }
-
+        /// <summary>
+        /// Collects the filter expressions into a flat list.
+        /// </summary>
+        /// <exception cref="NotSupportedException"></exception>
         private void Collect(IList<Filter> filters)
         {
             if (Filters?.Any() == true)
@@ -101,6 +105,9 @@ namespace KendoNET.DynamicLinq
         /// Converts the filter expression to a predicate suitable for Dynamic Linq e.g. "Field1 = @1 and Field2.Contains(@2)"
         /// </summary>
         /// <param name="filters">A list of flattened filters.</param>
+        /// <exception cref="OutOfMemoryException"></exception>
+        /// <exception cref="NotSupportedException"></exception>
+        /// <exception cref="AmbiguousMatchException"></exception>
         public string ToExpression(Type type, IList<Filter> filters)
         {
             if (Filters?.Any() == true)
@@ -111,7 +118,7 @@ namespace KendoNET.DynamicLinq
             var currentPropertyType = GetLastPropertyType(type, Field);
             if (currentPropertyType != typeof(String) && StringOperators.Contains(Operator))
             {
-                throw new NotSupportedException(string.Format("Operator {0} not support non-string type", Operator));
+                throw new NotSupportedException($"Operator {Operator} not support non-string type");
             }
 
             int index = filters.IndexOf(this);
@@ -134,30 +141,30 @@ namespace KendoNET.DynamicLinq
 
             if (Operator == "doesnotcontain")
             {
-                return String.Format("{0} != null && !{0}.{1}(@{2})", Field, comparison, index);
+                return $"{Field} != null && !{Field}.{comparison}(@{index})";
             }
 
             if (Operator == "isnull" || Operator == "isnotnull")
             {
-                return String.Format("{0} {1} null", Field, comparison);
+                return $"{Field} {comparison} null";
             }
 
             if (Operator == "isempty" || Operator == "isnotempty")
             {
-                return String.Format("{0} {1} String.Empty", Field, comparison);
+                return $"{Field} {comparison} String.Empty";
             }
 
             if (Operator == "isnullorempty" || Operator == "isnotnullorempty")
             {
-                return String.Format("{0}String.IsNullOrEmpty({1})", comparison, Field);
+                return $"{comparison}String.IsNullOrEmpty({Field})";
             }
 
             if (comparison == "StartsWith" || comparison == "EndsWith" || comparison == "Contains")
             {
-                return String.Format("{0} != null && {0}.{1}(@{2})", Field, comparison, index);
+                return $"{Field} != null && {Field}.{comparison}(@{index})";
             }
 
-            return String.Format("{0} {1} @{2}", Field, comparison, index);
+            return $"{Field} {comparison} @{index}";
         }
 
         /// <summary>
@@ -165,6 +172,10 @@ namespace KendoNET.DynamicLinq
         /// </summary>
         /// <param name="parameter">Parameter expression</param>
         /// <param name="filters">A list of flattened filters.</param>
+        /// <exception cref="NotSupportedException"></exception>
+        /// <exception cref="ArgumentException"></exception>
+        /// <exception cref="InvalidOperationException"></exception>
+        /// <exception cref="AmbiguousMatchException"></exception>
         public Expression ToLambdaExpression<T>(ParameterExpression parameter, IList<Filter> filters)
         {
             if (Filters?.Any() == true)
@@ -194,7 +205,7 @@ namespace KendoNET.DynamicLinq
             var currentPropertyType = GetLastPropertyType(typeof(T), Field);
             if (currentPropertyType != typeof(String) && StringOperators.Contains(Operator))
             {
-                throw new NotSupportedException(string.Format("Operator {0} not support non-string type", Operator));
+                throw new NotSupportedException($"Operator {Operator} not support non-string type");
             }
 
             var propertyChains = Field.Split('.');
@@ -314,12 +325,16 @@ namespace KendoNET.DynamicLinq
                     break;
 
                 default:
-                    throw new NotSupportedException(string.Format("Not support Operator {0}!", Operator));
+                    throw new NotSupportedException($"Not support Operator {Operator}!");
             }
 
             return resultExpression;
         }
-
+        /// <summary>
+        /// GEt last property type from the path.
+        /// </summary>
+        /// <exception cref="ArgumentException"></exception>
+        /// <exception cref="AmbiguousMatchException"></exception>
         internal static Type GetLastPropertyType(Type type, string path)
         {
             Type currentType = type;

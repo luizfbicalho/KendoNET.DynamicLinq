@@ -19,6 +19,21 @@ namespace KendoNET.DynamicLinq
         /// <param name="sort">Specifies the current sort order.</param>
         /// <param name="filter">Specifies the current filter.</param>
         /// <returns>A DataSourceResult object populated from the processed IQueryable.</returns>
+        /// <exception cref="OverflowException"></exception>
+        /// <exception cref="ArgumentException"></exception>
+        /// <exception cref="AmbiguousMatchException"></exception>
+        /// <exception cref="NotSupportedException"></exception>
+        /// <exception cref="TargetInvocationException"></exception>
+        /// <exception cref="MethodAccessException"></exception>
+        /// <exception cref="MemberAccessException"></exception>
+        /// <exception cref="System.Runtime.InteropServices.InvalidComObjectException"></exception>
+        /// <exception cref="System.Runtime.InteropServices.COMException"></exception>
+        /// <exception cref="TypeLoadException"></exception>
+        /// <exception cref="InvalidOperationException"></exception>
+        /// <exception cref="TargetException"></exception>
+        /// <exception cref="TargetParameterCountException"></exception>
+        /// <exception cref="OverflowException"></exception>
+        /// <exception cref="OutOfMemoryException"></exception>
         public static DataSourceResult<T> ToDataSourceResult<T>(this IQueryable<T> queryable, int take, int skip, IEnumerable<Sort> sort, Filter filter)
         {
             return queryable.ToDataSourceResult(take, skip, sort, filter, null, null);
@@ -31,6 +46,21 @@ namespace KendoNET.DynamicLinq
         /// <param name="queryable">The IQueryable which should be processed.</param>
         /// <param name="request">The DataSourceRequest object containing take, skip, sort, filter, aggregates, and groups data.</param>
         /// <returns>A DataSourceResult object populated from the processed IQueryable.</returns>
+        /// <exception cref="OverflowException"></exception>
+        /// <exception cref="ArgumentException"></exception>
+        /// <exception cref="AmbiguousMatchException"></exception>
+        /// <exception cref="NotSupportedException"></exception>
+        /// <exception cref="TargetInvocationException"></exception>
+        /// <exception cref="MethodAccessException"></exception>
+        /// <exception cref="MemberAccessException"></exception>
+        /// <exception cref="System.Runtime.InteropServices.InvalidComObjectException"></exception>
+        /// <exception cref="System.Runtime.InteropServices.COMException"></exception>
+        /// <exception cref="TypeLoadException"></exception>
+        /// <exception cref="InvalidOperationException"></exception>
+        /// <exception cref="TargetException"></exception>
+        /// <exception cref="TargetParameterCountException"></exception>
+        /// <exception cref="OverflowException"></exception>
+        /// <exception cref="OutOfMemoryException"></exception>
         public static DataSourceResult<T> ToDataSourceResult<T>(this IQueryable<T> queryable, DataSourceRequest request)
         {
             return queryable.ToDataSourceResult(request.Take, request.Skip, request.Sort, request.Filter, request.Aggregate, request.Group);
@@ -48,6 +78,22 @@ namespace KendoNET.DynamicLinq
         /// <param name="aggregates">Specifies the current aggregates.</param>
         /// <param name="group">Specifies the current groups.</param>
         /// <returns>A DataSourceResult object populated from the processed IQueryable.</returns>
+        /// <exception cref="OverflowException"></exception>
+        /// <exception cref="NotSupportedException"></exception>
+        /// <exception cref="ArgumentException"></exception>
+        /// <exception cref="AmbiguousMatchException"></exception>
+        /// <exception cref="NotSupportedException"></exception>
+        /// <exception cref="TargetInvocationException"></exception>
+        /// <exception cref="MethodAccessException"></exception>
+        /// <exception cref="MemberAccessException"></exception>
+        /// <exception cref="System.Runtime.InteropServices.InvalidComObjectException"></exception>
+        /// <exception cref="System.Runtime.InteropServices.COMException"></exception>
+        /// <exception cref="TypeLoadException"></exception>
+        /// <exception cref="InvalidOperationException"></exception>
+        /// <exception cref="TargetException"></exception>
+        /// <exception cref="TargetParameterCountException"></exception>
+        /// <exception cref="OverflowException"></exception>
+        /// <exception cref="OutOfMemoryException"></exception>
         public static DataSourceResult<T> ToDataSourceResult<T>(this IQueryable<T> queryable,
             int take,
             int skip,
@@ -94,7 +140,10 @@ namespace KendoNET.DynamicLinq
             return result;
         }
 
-
+        /// <summary>
+        /// Updates the IQueryable with sorting and paging.
+        /// </summary>
+        /// <exception cref="OutOfMemoryException"></exception>
         public static IQueryable<T> UpdateQuery<T>(IQueryable<T> queryable, int take, int skip, IEnumerable<Sort> sort, IEnumerable<Group>? group)
         {
             if (group?.Any() == true)
@@ -123,7 +172,11 @@ namespace KendoNET.DynamicLinq
             return queryable;
         }
 
-
+        /// <summary>
+        /// Set Filters for IQueryable using Dynamic Linq.
+        /// </summary>
+        /// <exception cref="NotSupportedException"></exception>
+        /// <exception cref="AmbiguousMatchException"></exception>
         public static IQueryable<T> Filters<T>(IQueryable<T> queryable, Filter filter, List<object> errors)
         {
             if (filter?.Logic != null)
@@ -177,6 +230,23 @@ namespace KendoNET.DynamicLinq
             return queryable;
         }
 
+        /// <summary>
+        /// Agregates the IQueryable using Dynamic Linq.
+        /// </summary>
+        /// <exception cref="ArgumentException"></exception>
+        /// <exception cref="AmbiguousMatchException"></exception>
+        /// <exception cref="NotSupportedException"></exception>
+        /// <exception cref="TargetInvocationException"></exception>
+        /// <exception cref="MethodAccessException"></exception>
+        /// <exception cref="MemberAccessException"></exception>
+        /// <exception cref="System.Runtime.InteropServices.InvalidComObjectException"></exception>
+        /// <exception cref="System.Runtime.InteropServices.COMException"></exception>
+        /// <exception cref="TypeLoadException"></exception>
+        /// <exception cref="InvalidOperationException"></exception>
+        /// <exception cref="TargetException"></exception>
+        /// <exception cref="TargetParameterCountException"></exception>
+        /// <exception cref="OverflowException"></exception>
+        /// <exception cref="OutOfMemoryException"></exception>
         public static object? Aggregates<T>(IQueryable<T> queryable, IEnumerable<Aggregator>? aggregates)
         {
             if (aggregates?.Any() == true)
@@ -236,6 +306,10 @@ namespace KendoNET.DynamicLinq
             return null;
         }
 
+        /// <summary>
+        /// Sorts the IQueryable using Dynamic Linq.
+        /// </summary>
+        /// <exception cref="OutOfMemoryException"></exception>
         public static IQueryable<T> Sort<T>(IQueryable<T> queryable, IEnumerable<Sort> sort)
         {
             if (sort?.Any() == true)
@@ -259,6 +333,7 @@ namespace KendoNET.DynamicLinq
         /// Pretreatment of specific DateTime type and convert some illegal value type
         /// </summary>
         /// <param name="filter"></param>
+        /// <exception cref="AmbiguousMatchException"></exception>
         private static Filter PreliminaryWork(Type type, Filter filter)
         {
             if (filter.Filters != null && filter.Logic != null)
