@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Linq.Dynamic.Core;
 using System.Linq.Expressions;
@@ -336,7 +337,7 @@ namespace KendoNET.DynamicLinq
             }
 
             // Convert datetime-string to DateTime
-            if (currentPropertyType == typeof(DateTime) && DateTime.TryParse(filter.Value.ToString(), out DateTime dateTime))
+            if (currentPropertyType == typeof(DateTime) && DateTime.TryParse(filter.Value.ToString(), DateTimeFormatInfo.CurrentInfo, out var dateTime))
             {
                 filter.Value = dateTime;
 
@@ -357,7 +358,7 @@ namespace KendoNET.DynamicLinq
                         {
                             Field = filter.Field,
                             Filters = filter.Filters??[],
-                            Value = new DateTime(localTime.Year, localTime.Month, localTime.Day, 0, 0, 0),
+                            Value = new DateTime(localTime.Year, localTime.Month, localTime.Day, 0, 0, 0,DateTimeKind.Unspecified),
                             Operator = "gte"
                         },
                         // ...and less than the end of that same day (we're making an additional filter here)
@@ -365,7 +366,7 @@ namespace KendoNET.DynamicLinq
                         {
                             Field = filter.Field,
                             Filters = filter.Filters??[],
-                            Value = new DateTime(localTime.Year, localTime.Month, localTime.Day, 23, 59, 59),
+                            Value = new DateTime(localTime.Year, localTime.Month, localTime.Day, 23, 59, 59,DateTimeKind.Unspecified),
                             Operator = "lte"
                         }
                     };
@@ -374,7 +375,7 @@ namespace KendoNET.DynamicLinq
                 }
 
                 // Convert datetime to local
-                filter.Value = new DateTime(localTime.Year, localTime.Month, localTime.Day, localTime.Hour, localTime.Minute, localTime.Second, localTime.Millisecond);
+                filter.Value = new DateTime(localTime.Year, localTime.Month, localTime.Day, localTime.Hour, localTime.Minute, localTime.Second, localTime.Millisecond, DateTimeKind.Unspecified);
             }
 
             return filter;

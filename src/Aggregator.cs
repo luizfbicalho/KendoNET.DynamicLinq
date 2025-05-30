@@ -141,8 +141,10 @@ namespace KendoNET.DynamicLinq
         /// <exception cref="ArgumentException"></exception>
         private static Func<Type, Type[]> GetSumAvg(Type t, Type proptype)
         {
+#pragma warning disable S3011 // Reflection should not be used to increase accessibility of classes, methods, or fields
             return (Func<Type, Type[]>)(t.GetMethod(nameof(SumAvgFunc), BindingFlags.Static | BindingFlags.NonPublic)?.MakeGenericMethod(proptype).Invoke(null, null)
                 ?? throw new ArgumentException("Unable to invoke SumAvgFunc."));
+#pragma warning restore S3011 // Reflection should not be used to increase accessibility of classes, methods, or fields
         }
 
 
