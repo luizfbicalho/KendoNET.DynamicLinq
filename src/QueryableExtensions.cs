@@ -8,6 +8,10 @@ using System.Reflection;
 
 namespace KendoNET.DynamicLinq
 {
+    /// <summary>
+    /// Provides extension methods for asynchronously applying Kendo-style data operations (paging, sorting, filtering, grouping, and aggregation)
+    /// to <see cref="IQueryable{T}"/> sources using Dynamic LINQ
+    /// </summary>
     public static class QueryableExtensions
     {
         /// <summary>
@@ -299,6 +303,16 @@ namespace KendoNET.DynamicLinq
             return queryable;
         }
 
+        /// <summary>
+        /// Applies paging to the <see cref="IQueryable{T}"/> by skipping a specified number of elements and then taking a specified number of elements.
+        /// </summary>
+        /// <typeparam name="T">The type of the elements in the source queryable.</typeparam>
+        /// <param name="queryable">The source <see cref="IQueryable{T}"/> to page.</param>
+        /// <param name="take">The number of elements to take (page size).</param>
+        /// <param name="skip">The number of elements to skip (used for paging).</param>
+        /// <returns>
+        /// An <see cref="IQueryable{T}"/> that contains the elements that occur after skipping <paramref name="skip"/> elements and then taking <paramref name="take"/> elements from the input sequence.
+        /// </returns>
         public static IQueryable<T> Page<T>(this IQueryable<T> queryable, int take, int skip)
         {
             return queryable.Skip(skip).Take(take);
@@ -307,6 +321,7 @@ namespace KendoNET.DynamicLinq
         /// <summary>
         /// Pretreatment of specific DateTime type and convert some illegal value type
         /// </summary>
+        /// <param name="type"></param>
         /// <param name="filter"></param>
         /// <exception cref="AmbiguousMatchException"></exception>
         private static Filter PreliminaryWork(Type type, Filter filter)

@@ -68,7 +68,7 @@ namespace KendoNET.DynamicLinq
             for (var i = 0; i < tokens.Length; i++)
             {
                 var token = tokens[i];
-                tokens[i] = token.Substring(0, 1).ToUpper() + token.Substring(1);
+                tokens[i] = $"{token.Substring(0, 1).ToUpperInvariant()}{token.Substring(1)}";
             }
 
             return string.Join(" ", tokens);

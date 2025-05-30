@@ -1,13 +1,17 @@
-﻿using System;
+﻿using Microsoft.EntityFrameworkCore;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
-using Microsoft.EntityFrameworkCore;
 
 namespace KendoNET.DynamicLinq.EFCore
 {
+    /// <summary>
+    /// Provides extension methods for asynchronously applying Kendo-style data operations (paging, sorting, filtering, grouping, and aggregation)
+    /// to <see cref="IQueryable{T}"/> sources using Dynamic LINQ and Entity Framework Core.
+    /// </summary>
     public static class QueryableAsyncExtensionsAsync
     {
         /// <summary>
@@ -19,6 +23,7 @@ namespace KendoNET.DynamicLinq.EFCore
         /// <param name="skip">Specifies how many items to skip.</param>
         /// <param name="sort">Specifies the current sort order.</param>
         /// <param name="filter">Specifies the current filter.</param>
+        /// <param name="ct"></param>
         /// <returns>A DataSourceResult object populated from the processed IQueryable.</returns>
         /// <exception cref="ArgumentException"></exception>
         /// <exception cref="AmbiguousMatchException"></exception>
@@ -46,6 +51,7 @@ namespace KendoNET.DynamicLinq.EFCore
         /// <typeparam name="T">The type of the IQueryable.</typeparam>
         /// <param name="queryable">The IQueryable which should be processed.</param>
         /// <param name="request">The DataSourceRequest object containing take, skip, sort, filter, aggregates, and groups data.</param>
+        /// <param name="ct"></param>
         /// <returns>A DataSourceResult object populated from the processed IQueryable.</returns>
         /// <exception cref="ArgumentException"></exception>
         /// <exception cref="AmbiguousMatchException"></exception>
@@ -78,6 +84,7 @@ namespace KendoNET.DynamicLinq.EFCore
         /// <param name="filter">Specifies the current filter.</param>
         /// <param name="aggregates">Specifies the current aggregates.</param>
         /// <param name="group">Specifies the current groups.</param>
+        /// <param name="ct"></param>
         /// <returns>A DataSourceResult object populated from the processed IQueryable.</returns>
         /// <exception cref="ArgumentException"></exception>
         /// <exception cref="AmbiguousMatchException"></exception>

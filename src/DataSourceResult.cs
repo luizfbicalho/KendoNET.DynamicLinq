@@ -44,8 +44,8 @@ namespace KendoNET.DynamicLinq
         /// <exception cref="System.Reflection.ReflectionTypeLoadException"></exception>
         private static Type[] GetKnownTypes()
         {
-            var assembly = AppDomain.CurrentDomain.GetAssemblies().FirstOrDefault(a => a?.FullName?.StartsWith("DynamicClasses") ?? false);
-            return assembly == null ? [] : assembly.GetTypes().Where(t => t.Name.StartsWith("DynamicClass")).ToArray();
+            var assembly = AppDomain.CurrentDomain.GetAssemblies().FirstOrDefault(a => a?.FullName?.StartsWith("DynamicClasses", StringComparison.InvariantCulture) ?? false);
+            return assembly == null ? [] : assembly.GetTypes().Where(t => t.Name.StartsWith("DynamicClass", StringComparison.InvariantCulture)).ToArray();
         }
     }
 }

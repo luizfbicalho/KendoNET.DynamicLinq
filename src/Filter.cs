@@ -41,12 +41,12 @@ namespace KendoNET.DynamicLinq
         /// Gets or sets the child filter expressions. Set to null if there are no child expressions.
         /// </summary>
         [DataMember(Name = "filters")]
-        public IEnumerable<Filter> Filters { get; set; } = [];
+        public IEnumerable<Filter>? Filters { get; set; }
 
         /// <summary>
         /// Mapping of Kendo DataSource filtering operators to Dynamic Linq
         /// </summary>
-        private static readonly IDictionary<string, string> Operators = new Dictionary<string, string>
+        private static readonly Dictionary<string, string> Operators = new Dictionary<string, string>
         {
             { "eq", "=" },
             { "neq", "!=" },
@@ -104,6 +104,7 @@ namespace KendoNET.DynamicLinq
         /// <summary>
         /// Converts the filter expression to a predicate suitable for Dynamic Linq e.g. "Field1 = @1 and Field2.Contains(@2)"
         /// </summary>
+        /// <param name="type"></param>
         /// <param name="filters">A list of flattened filters.</param>
         /// <exception cref="OutOfMemoryException"></exception>
         /// <exception cref="NotSupportedException"></exception>
