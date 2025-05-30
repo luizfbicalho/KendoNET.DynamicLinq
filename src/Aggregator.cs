@@ -64,7 +64,7 @@ namespace KendoNET.DynamicLinq
         /// <exception cref="OutOfMemoryException"></exception>
         private static string ConvertTitleCase(string str)
         {
-            var tokens = str.Split(new[] { " " }, StringSplitOptions.RemoveEmptyEntries);
+            var tokens = str.Split([" "], StringSplitOptions.RemoveEmptyEntries);
             for (var i = 0; i < tokens.Length; i++)
             {
                 var token = tokens[i];

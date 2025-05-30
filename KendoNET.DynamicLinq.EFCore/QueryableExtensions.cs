@@ -106,14 +106,14 @@ namespace KendoNET.DynamicLinq.EFCore
             var errors = new List<object>();
 
             // Filter the data first
-            queryable = QueryableExtensions.Filters(queryable, filter, errors);
+            queryable = queryable.Filters(filter, errors);
 
             // Calculate the total number of records (needed for paging)
             var total = await queryable.CountAsync(ct);
 
             // Calculate the aggregates
-            var aggregate = QueryableExtensions.Aggregates(queryable, aggregates);
-            queryable = QueryableExtensions.UpdateQuery(queryable, take, skip, sort, group);
+            var aggregate = queryable.Aggregates(aggregates);
+            queryable = queryable.UpdateQuery(take, skip, sort, group);
 
             var result = new DataSourceResult<T>
             {

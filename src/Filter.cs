@@ -121,7 +121,7 @@ namespace KendoNET.DynamicLinq
                 throw new NotSupportedException($"Operator {Operator} not support non-string type");
             }
 
-            int index = filters.IndexOf(this);
+            var index = filters.IndexOf(this);
             var comparison = Operators[Operator];
 
             if (Operator == "doesnotcontain")
@@ -219,11 +219,7 @@ namespace KendoNET.DynamicLinq
 
                     if (Operator == "contains" || Operator == "doesnotcontain")
                     {
-                        var containsMethod = typeof(string).GetMethod("Contains", [typeof(string)]);
-                        if (containsMethod == null)
-                        {
-                            throw new InvalidOperationException("String.Contains method not found. Ensure the type is string or compatible.");
-                        }
+                        var containsMethod = typeof(string).GetMethod("Contains", [typeof(string)]) ?? throw new InvalidOperationException("String.Contains method not found. Ensure the type is string or compatible.");
                         var containsExpression = Expression.Call(left, containsMethod, right);
                         if (Operator == "contains")
                             resultExpression = Expression.AndAlso(Expression.Not(nullCheckExpression), containsExpression);
@@ -232,21 +228,13 @@ namespace KendoNET.DynamicLinq
                     }
                     else if (Operator == "startswith")
                     {
-                        var startswithMethod = typeof(string).GetMethod("StartsWith", [typeof(string)]);
-                        if (startswithMethod == null)
-                        {
-                            throw new InvalidOperationException("String.StartsWith method not found. Ensure the type is string or compatible.");
-                        }
+                        var startswithMethod = typeof(string).GetMethod("StartsWith", [typeof(string)]) ?? throw new InvalidOperationException("String.StartsWith method not found. Ensure the type is string or compatible.");
                         var startswithExpression = Expression.Call(left, startswithMethod, right);
                         resultExpression = Expression.AndAlso(Expression.Not(nullCheckExpression), startswithExpression);
                     }
                     else if (Operator == "endswith")
                     {
-                        var endswithMethod = typeof(string).GetMethod("EndsWith", [typeof(string)]);
-                        if (endswithMethod == null)
-                        {
-                            throw new InvalidOperationException("String.EndsWith method not found. Ensure the type is string or compatible.");
-                        }
+                        var endswithMethod = typeof(string).GetMethod("EndsWith", [typeof(string)]) ?? throw new InvalidOperationException("String.EndsWith method not found. Ensure the type is string or compatible.");
                         var endswithExpression = Expression.Call(left, endswithMethod, right);
                         resultExpression = Expression.AndAlso(Expression.Not(nullCheckExpression), endswithExpression);
                     }
@@ -272,11 +260,7 @@ namespace KendoNET.DynamicLinq
 
                 case "isnullorempty":
                 case "isnotnullorempty":
-                    var nullOrEmptyMethod = typeof(string).GetMethod("IsNullOrEmpty", [typeof(string)]);
-                    if (nullOrEmptyMethod == null)
-                    {
-                        throw new InvalidOperationException("String.IsNullOrEmpty method not found. Ensure the type is string or compatible.");
-                    }
+                    var nullOrEmptyMethod = typeof(string).GetMethod("IsNullOrEmpty", [typeof(string)]) ?? throw new InvalidOperationException("String.IsNullOrEmpty method not found. Ensure the type is string or compatible.");
                     var nullOrEmptyExpression = Expression.Call(left, nullOrEmptyMethod, right);
                     if (Operator == "isnullorempty")
                         resultExpression = nullOrEmptyExpression;
@@ -322,17 +306,13 @@ namespace KendoNET.DynamicLinq
         /// <exception cref="AmbiguousMatchException"></exception>
         internal static Type GetLastPropertyType(Type type, string path)
         {
-            Type currentType = type;
+            var currentType = type;
 
             /* Searches for the public property with the specified name */
             /* Used in versions above 3.1.0 */
             foreach (var propertyName in path.Split('.'))
             {
-                PropertyInfo? property = currentType.GetProperty(propertyName);
-                if (property == null)
-                {
-                    throw new ArgumentException($"Property '{propertyName}' not found in type '{currentType.Name}'");
-                }
+                var property = currentType.GetProperty(propertyName) ?? throw new ArgumentException($"Property '{propertyName}' not found in type '{currentType.Name}'");
                 currentType = property.PropertyType;
             }
 

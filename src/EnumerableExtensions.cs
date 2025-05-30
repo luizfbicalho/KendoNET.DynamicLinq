@@ -50,7 +50,7 @@ namespace KendoNET.DynamicLinq
                             g => new GroupResult
                             {
                                 Value = g.Key,
-                                Aggregates = QueryableExtensions.Aggregates(g.AsQueryable(), selector.Aggregates),
+                                Aggregates = g.AsQueryable().Aggregates(selector.Aggregates),
                                 HasSubgroups = groupSelectors.Length > 1,
                                 Count = g.Count(),
                                 Items = g.GroupByMany(nextSelectors),   // Recursivly group the next selectors
@@ -61,7 +61,7 @@ namespace KendoNET.DynamicLinq
             // If there are not more group selectors return data
             return elements.Select(s => new GroupResult
             {
-                Aggregates = QueryableExtensions.Aggregates(elements.AsQueryable(), null),
+                Aggregates = elements.AsQueryable().Aggregates(null),
                 Count = 1,
                 HasSubgroups = false,
                 SelectorField = string.Empty,

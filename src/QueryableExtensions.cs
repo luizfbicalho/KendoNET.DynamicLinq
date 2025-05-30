@@ -112,9 +112,9 @@ namespace KendoNET.DynamicLinq
             var total = queryable.Count();
 
             // Calculate the aggregates
-            var aggregate = Aggregates(queryable, aggregates);
+            var aggregate = queryable.Aggregates(aggregates);
 
-            queryable = UpdateQuery(queryable, take, skip, sort, group);
+            queryable = queryable.UpdateQuery(take, skip, sort, group);
 
             var result = new DataSourceResult<T>
             {
@@ -145,7 +145,7 @@ namespace KendoNET.DynamicLinq
         /// Updates the IQueryable with sorting and paging.
         /// </summary>
         /// <exception cref="OutOfMemoryException"></exception>
-        public static IQueryable<T> UpdateQuery<T>(IQueryable<T> queryable, int take, int skip, IEnumerable<Sort> sort, IEnumerable<Group>? group)
+        public static IQueryable<T> UpdateQuery<T>(this IQueryable<T> queryable, int take, int skip, IEnumerable<Sort> sort, IEnumerable<Group>? group)
         {
             if (group?.Any() == true)
             {
@@ -176,7 +176,7 @@ namespace KendoNET.DynamicLinq
         /// </summary>
         /// <exception cref="NotSupportedException"></exception>
         /// <exception cref="AmbiguousMatchException"></exception>
-        public static IQueryable<T> Filters<T>(IQueryable<T> queryable, Filter filter, List<object> errors)
+        public static IQueryable<T> Filters<T>(this IQueryable<T> queryable, Filter filter, List<object> errors)
         {
             if (filter?.Logic != null)
             {
@@ -226,7 +226,7 @@ namespace KendoNET.DynamicLinq
         /// <exception cref="TargetParameterCountException"></exception>
         /// <exception cref="OverflowException"></exception>
         /// <exception cref="OutOfMemoryException"></exception>
-        public static object? Aggregates<T>(IQueryable<T> queryable, IEnumerable<Aggregator>? aggregates)
+        public static object? Aggregates<T>(this IQueryable<T> queryable, IEnumerable<Aggregator>? aggregates)
         {
             if (aggregates?.Any() == true)
             {
@@ -239,11 +239,7 @@ namespace KendoNET.DynamicLinq
                     var fieldProps = new Dictionary<DynamicProperty, object?>();
                     foreach (var aggregate in group)
                     {
-                        var prop = typeof(T).GetProperty(aggregate.Field);
-                        if (prop == null)
-                        {
-                            throw new ArgumentException($"Property '{aggregate.Field}' does not exist on type '{typeof(T).Name}'.");
-                        }
+                        var prop = typeof(T).GetProperty(aggregate.Field) ?? throw new ArgumentException($"Property '{aggregate.Field}' does not exist on type '{typeof(T).Name}'.");
                         var param = Expression.Parameter(typeof(T), "s");
                         var selector = aggregate.Aggregate == "count" && (Nullable.GetUnderlyingType(prop.PropertyType) != null)
                             ? Expression.Lambda(Expression.NotEqual(Expression.MakeMemberAccess(param, prop), Expression.Constant(null, prop.PropertyType)), param)
@@ -330,7 +326,7 @@ namespace KendoNET.DynamicLinq
 
             // When we have a decimal value, it gets converted to an integer/double that will result in the query break
             var currentPropertyType = Filter.GetLastPropertyType(type, filter.Field);
-            if ((currentPropertyType == typeof(decimal) || currentPropertyType == typeof(decimal?)) && decimal.TryParse(filter.Value.ToString(), out decimal number))
+            if ((currentPropertyType == typeof(decimal) || currentPropertyType == typeof(decimal?)) && decimal.TryParse(filter.Value.ToString(), out var number))
             {
                 filter.Value = number;
                 return filter;
@@ -350,23 +346,26 @@ namespace KendoNET.DynamicLinq
                     if (localTime.Hour != 0 || localTime.Minute != 0 || localTime.Second != 0)
                         return filter;
 
-                    var newFilter = new Filter { Logic = "and" };
-                    newFilter.Filters = new List<Filter>
+                    var newFilter = new Filter
                     {
+                        Logic = "and",
+                        Filters =
+                        [
                         // Instead of comparing for exact equality, we compare as greater than the start of the day...
-                        new() {
-                            Field = filter.Field,
-                            Filters = filter.Filters??[],
-                            Value = new DateTime(localTime.Year, localTime.Month, localTime.Day, 0, 0, 0,DateTimeKind.Unspecified),
-                            Operator = "gte"
-                        },
+                            new() {
+                                Field = filter.Field,
+                                Filters = filter.Filters??[],
+                                Value = new DateTime(localTime.Year, localTime.Month, localTime.Day, 0, 0, 0,DateTimeKind.Unspecified),
+                                Operator = "gte"
+                            },
                         // ...and less than the end of that same day (we're making an additional filter here)
-                        new() {
-                            Field = filter.Field,
-                            Filters = filter.Filters??[],
-                            Value = new DateTime(localTime.Year, localTime.Month, localTime.Day, 23, 59, 59,DateTimeKind.Unspecified),
-                            Operator = "lte"
-                        }
+                            new() {
+                                Field = filter.Field,
+                                Filters = filter.Filters??[],
+                                Value = new DateTime(localTime.Year, localTime.Month, localTime.Day, 23, 59, 59,DateTimeKind.Unspecified),
+                                Operator = "lte"
+                            }
+                        ]
                     };
 
                     return newFilter;

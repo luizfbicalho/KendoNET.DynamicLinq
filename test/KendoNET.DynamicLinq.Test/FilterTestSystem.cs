@@ -37,15 +37,15 @@ namespace KendoNET.DynamicLinq.Test
 
             var result2 = _dbContext.Employee.AsQueryable().ToDataSourceResult(10, 0, null, new Filter
             {
-                Filters = new[]
-                {
+                Filters =
+                [
                     new Filter
                     {
                         Field = "Company.Name",
                         Operator = "contains",
                         Value = "Microsoft"
                     }
-                },
+                ],
                 Logic = "and"
             });
 

@@ -46,14 +46,14 @@ namespace KendoNET.DynamicLinq.Test
         [Test]
         public void InputParameter_DecimalSum_CheckResultObjectString()
         {
-            var result = _dbContext.Employee.AsQueryable().ToDataSourceResult(10, 0, null, null, new[]
-            {
+            var result = _dbContext.Employee.AsQueryable().ToDataSourceResult(10, 0, null, null,
+            [
                 new Aggregator
                 {
                     Aggregate = "sum",
                     Field = "Salary"
                 }
-            }, null);
+            ], null);
 
             object expectedObject = "{ Salary = { sum = 14850 } }";
             ClassicAssert.AreEqual(expectedObject, result.Aggregates.ToString());
@@ -85,8 +85,8 @@ namespace KendoNET.DynamicLinq.Test
         [Test]
         public void InputParameter_ManyAggregators_CheckResultObjectString()
         {
-            var result = _dbContext.Employee.AsQueryable().ToDataSourceResult(10, 0, null, null, new[]
-            {
+            var result = _dbContext.Employee.AsQueryable().ToDataSourceResult(10, 0, null, null,
+            [
                 new Aggregator
                 {
                     Aggregate = "sum",
@@ -102,7 +102,7 @@ namespace KendoNET.DynamicLinq.Test
                     Aggregate = "max",
                     Field = "Number"
                 },
-            }, null);
+            ], null);
 
             object expectedObject = "{ Salary = { sum = 14850, average = 2970 }, Number = { max = 6 } }";
             ClassicAssert.AreEqual(expectedObject, result.Aggregates.ToString());
