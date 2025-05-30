@@ -8,7 +8,7 @@ namespace KendoNET.DynamicLinq
     /// <summary>
     /// Describes the result of Kendo DataSource read operation.
     /// </summary>
-    [KnownType("GetKnownTypes")]
+    [KnownType(nameof(GetKnownTypes))]
     public class DataSourceResult<T>
     {
         /// <summary>

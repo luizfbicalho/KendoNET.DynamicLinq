@@ -148,9 +148,7 @@ namespace KendoNET.DynamicLinq
         {
             if (group?.Any() == true)
             {
-                //if(sort == null) sort = GetDefaultSort(queryable.ElementType, sort);
-                if (sort == null)
-                    sort = new List<Sort>();
+                sort ??= [];
                 foreach (var source in group.Reverse())
                 {
                     sort = sort.Append(new Sort
@@ -205,26 +203,6 @@ namespace KendoNET.DynamicLinq
 
                 // Step.3 Use the Where method of Dynamic Linq to filter the data
                 queryable = queryable.Where(predicate, values);
-
-                /* Method.2 Use the combined lambda expression */
-                // Step.1 Create a parameter "p"
-                //var parameter = Expression.Parameter(typeof(T), "p");
-
-                // Step.2 Make up expression e.g. (p.Number >= 3) AndAlso (p.Company.Name.Contains("M"))
-                //Expression expression;
-                //try
-                //{
-                //    expression = filter.ToLambdaExpression<T>(parameter, filters);
-                //}
-                //catch(Exception ex)
-                //{
-                //    errors.Add(ex.Message);
-                //    return queryable;
-                //}
-
-                // Step.3 The result is e.g. p => (p.Number >= 3) AndAlso (p.Company.Name.Contains("M"))
-                //var predicateExpression = Expression.Lambda<Func<T, bool>>(expression, parameter);
-                //queryable = queryable.Where(predicateExpression);
             }
 
             return queryable;
@@ -273,8 +251,8 @@ namespace KendoNET.DynamicLinq
                         if (mi == null) continue;
 
                         var val = queryable.Provider.Execute(Expression.Call(null, mi, aggregate.Aggregate == "count" && (Nullable.GetUnderlyingType(prop.PropertyType) == null)
-                            ? new[] { queryable.Expression }
-                            : new[] { queryable.Expression, Expression.Quote(selector) }));
+                            ? (IEnumerable<Expression>)[queryable.Expression]
+                            : (IEnumerable<Expression>)[queryable.Expression, Expression.Quote(selector)]));
 
                         fieldProps.Add(new DynamicProperty(aggregate.Aggregate, typeof(object)), val);
                     }
@@ -357,12 +335,6 @@ namespace KendoNET.DynamicLinq
                 return filter;
             }
 
-            // if(currentPropertyType.GetTypeInfo().IsEnum && int.TryParse(filter.Value.ToString(), out int enumValue))
-            // {
-            //     filter.Value = Enum.ToObject(currentPropertyType, enumValue);
-            //     return filter;
-            // }
-
             // Convert datetime-string to DateTime
             if (currentPropertyType == typeof(DateTime) && DateTime.TryParse(filter.Value.ToString(), out DateTime dateTime))
             {
@@ -406,47 +378,6 @@ namespace KendoNET.DynamicLinq
             }
 
             return filter;
-        }
-
-        /// <summary>
-        /// The way this extension works it pages the records using skip and takes to do that we need at least one sort property.
-        /// </summary>
-        private static IEnumerable<Sort> GetDefaultSort(Type type, IEnumerable<Sort> sort)
-        {
-            if (sort == null)
-            {
-                var elementType = type;
-                var properties = elementType.GetProperties().ToList();
-
-                //by default make dir desc
-                var sortByObject = new Sort { Dir = "desc" };
-
-                PropertyInfo? propertyInfo;
-                //look for property that is called id
-                if (properties.Any(p => string.Equals(p.Name, "id", StringComparison.OrdinalIgnoreCase)))
-                {
-                    propertyInfo = properties.FirstOrDefault(p => string.Equals(p.Name, "id", StringComparison.OrdinalIgnoreCase));
-                }
-                //or contains id
-                else if (properties.Any(p => p.Name.IndexOf("id", StringComparison.OrdinalIgnoreCase) >= 0))
-                {
-                    propertyInfo = properties.FirstOrDefault(p => p.Name.IndexOf("id", StringComparison.OrdinalIgnoreCase) >= 0);
-                }
-                //or just get the first property
-                else
-                {
-                    propertyInfo = properties.FirstOrDefault();
-                }
-
-                if (propertyInfo != null)
-                {
-                    sortByObject.Field = propertyInfo.Name;
-                }
-
-                sort = new List<Sort> { sortByObject };
-            }
-
-            return sort;
         }
     }
 }

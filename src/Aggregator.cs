@@ -143,7 +143,6 @@ namespace KendoNET.DynamicLinq
         {
             return (Func<Type, Type[]>)(t.GetMethod(nameof(SumAvgFunc), BindingFlags.Static | BindingFlags.NonPublic)?.MakeGenericMethod(proptype).Invoke(null, null)
                 ?? throw new ArgumentException("Unable to invoke SumAvgFunc."));
-
         }
 
 

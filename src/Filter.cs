@@ -124,21 +124,6 @@ namespace KendoNET.DynamicLinq
             int index = filters.IndexOf(this);
             var comparison = Operators[Operator];
 
-            //switch(Operator)
-            //{
-            //    case "doesnotcontain":
-            //        return String.Format("{0} != null && !{0}.{1}(@{2})", Field, comparison, index);
-            //    case "isnull":
-            //    case "isnotnull":
-            //        return String.Format("{0} {1} null", Field, comparison);
-            //    case "isempty":
-            //    case "isnotempty":
-            //        return String.Format("{0} {1} String.Empty", Field, comparison);
-            //    case "isnullorempty":
-            //    case "isnotnullorempty":
-            //        return String.Format("{0}String.IsNullOrEmpty({1})", comparison, Field);
-            //}
-
             if (Operator == "doesnotcontain")
             {
                 return $"{Field} != null && !{Field}.{comparison}(@{index})";
@@ -341,7 +326,7 @@ namespace KendoNET.DynamicLinq
 
             /* Searches for the public property with the specified name */
             /* Used in versions above 3.1.0 */
-            foreach (string propertyName in path.Split('.'))
+            foreach (var propertyName in path.Split('.'))
             {
                 PropertyInfo? property = currentType.GetProperty(propertyName);
                 if (property == null)
@@ -350,14 +335,6 @@ namespace KendoNET.DynamicLinq
                 }
                 currentType = property.PropertyType;
             }
-
-            /* Retrieves all properties defined on the specified type, including inherited, non-public, instance, and static properties */
-            /* Used in versions under 2.2.2 */
-            //foreach (string propertyName in path.Split('.'))
-            //{
-            //    var typeProperties = currentType.GetRuntimeProperties();
-            //    currentType = typeProperties.FirstOrDefault(f => f.Name.Equals(propertyName, StringComparison.OrdinalIgnoreCase))?.PropertyType;
-            //}
 
             return currentType;
         }
