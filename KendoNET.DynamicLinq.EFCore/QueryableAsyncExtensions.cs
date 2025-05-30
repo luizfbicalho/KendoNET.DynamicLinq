@@ -98,7 +98,7 @@ namespace KendoNET.DynamicLinq.EFCore
             int take,
             int skip,
             IEnumerable<Sort> sort,
-            Filter filter,
+            Filter? filter,
             IEnumerable<Aggregator>? aggregates,
             IEnumerable<Group>? group,
             CancellationToken ct)

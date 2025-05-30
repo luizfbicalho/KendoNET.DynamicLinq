@@ -22,7 +22,7 @@ namespace KendoNET.DynamicLinq
         /// <summary>
         /// Specifies the requested filter.
         /// </summary>
-        public Filter Filter { get; set; } = new();
+        public Filter? Filter { get; set; }
 
         /// <summary>
         /// Specifies the requested grouping .

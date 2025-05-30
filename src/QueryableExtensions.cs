@@ -99,7 +99,7 @@ namespace KendoNET.DynamicLinq
             int take,
             int skip,
             IEnumerable<Sort> sort,
-            Filter filter,
+            Filter? filter,
             IEnumerable<Aggregator>? aggregates,
             IEnumerable<Group>? group)
         {
@@ -176,7 +176,7 @@ namespace KendoNET.DynamicLinq
         /// </summary>
         /// <exception cref="NotSupportedException"></exception>
         /// <exception cref="AmbiguousMatchException"></exception>
-        public static IQueryable<T> Filters<T>(this IQueryable<T> queryable, Filter filter, List<object> errors)
+        public static IQueryable<T> Filters<T>(this IQueryable<T> queryable, Filter? filter, List<object> errors)
         {
             if (filter?.Logic != null)
             {
