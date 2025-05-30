@@ -10,7 +10,6 @@ namespace KendoNET.DynamicLinq.EFCore
 {
     public static class QueryableExtensionsAsync
     {
-
         /// <summary>
         /// Applies data processing (paging, sorting and filtering) over IQueryable using Dynamic Linq.
         /// </summary>

@@ -112,11 +112,11 @@ namespace KendoNET.DynamicLinq
         {
             if (Filters?.Any() == true)
             {
-                return "(" + String.Join(" " + Logic + " ", Filters.Select(filter => filter.ToExpression(type, filters)).ToArray()) + ")";
+                return "(" + string.Join(" " + Logic + " ", Filters.Select(filter => filter.ToExpression(type, filters)).ToArray()) + ")";
             }
 
             var currentPropertyType = GetLastPropertyType(type, Field);
-            if (currentPropertyType != typeof(String) && StringOperators.Contains(Operator))
+            if (currentPropertyType != typeof(string) && StringOperators.Contains(Operator))
             {
                 throw new NotSupportedException($"Operator {Operator} not support non-string type");
             }
@@ -188,7 +188,7 @@ namespace KendoNET.DynamicLinq
             }
 
             var currentPropertyType = GetLastPropertyType(typeof(T), Field);
-            if (currentPropertyType != typeof(String) && StringOperators.Contains(Operator))
+            if (currentPropertyType != typeof(string) && StringOperators.Contains(Operator))
             {
                 throw new NotSupportedException($"Operator {Operator} not support non-string type");
             }
@@ -219,7 +219,7 @@ namespace KendoNET.DynamicLinq
 
                     if (Operator == "contains" || Operator == "doesnotcontain")
                     {
-                        var containsMethod = typeof(String).GetMethod("Contains", new[] { typeof(String) });
+                        var containsMethod = typeof(string).GetMethod("Contains", [typeof(string)]);
                         if (containsMethod == null)
                         {
                             throw new InvalidOperationException("String.Contains method not found. Ensure the type is string or compatible.");
@@ -232,7 +232,7 @@ namespace KendoNET.DynamicLinq
                     }
                     else if (Operator == "startswith")
                     {
-                        var startswithMethod = typeof(String).GetMethod("StartsWith", new[] { typeof(String) });
+                        var startswithMethod = typeof(string).GetMethod("StartsWith", [typeof(string)]);
                         if (startswithMethod == null)
                         {
                             throw new InvalidOperationException("String.StartsWith method not found. Ensure the type is string or compatible.");
@@ -242,7 +242,7 @@ namespace KendoNET.DynamicLinq
                     }
                     else if (Operator == "endswith")
                     {
-                        var endswithMethod = typeof(String).GetMethod("EndsWith", new[] { typeof(String) });
+                        var endswithMethod = typeof(string).GetMethod("EndsWith", [typeof(string)]);
                         if (endswithMethod == null)
                         {
                             throw new InvalidOperationException("String.EndsWith method not found. Ensure the type is string or compatible.");
@@ -263,7 +263,7 @@ namespace KendoNET.DynamicLinq
 
                 case "isempty":
                 case "isnotempty":
-                    var emptyCheckExpression = Expression.Equal(left, Expression.Constant(String.Empty, currentPropertyType));
+                    var emptyCheckExpression = Expression.Equal(left, Expression.Constant(string.Empty, currentPropertyType));
                     if (Operator == "isempty")
                         resultExpression = emptyCheckExpression;
                     else
@@ -272,7 +272,7 @@ namespace KendoNET.DynamicLinq
 
                 case "isnullorempty":
                 case "isnotnullorempty":
-                    var nullOrEmptyMethod = typeof(String).GetMethod("IsNullOrEmpty", new[] { typeof(String) });
+                    var nullOrEmptyMethod = typeof(string).GetMethod("IsNullOrEmpty", [typeof(string)]);
                     if (nullOrEmptyMethod == null)
                     {
                         throw new InvalidOperationException("String.IsNullOrEmpty method not found. Ensure the type is string or compatible.");

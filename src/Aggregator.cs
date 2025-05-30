@@ -147,7 +147,6 @@ namespace KendoNET.DynamicLinq
 #pragma warning restore S3011 // Reflection should not be used to increase accessibility of classes, methods, or fields
         }
 
-
         private static Func<Type, Type, Type[]> MinMaxFunc()
         {
             return MinMaxDelegate;

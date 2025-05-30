@@ -161,12 +161,12 @@ namespace KendoNET.DynamicLinq
             }
 
             // Sort the data
-            queryable = QueryableExtensions.Sort(queryable, sort);
+            queryable = queryable.Sort(sort);
 
             // Finally page the data
             if (take > 0)
             {
-                queryable = QueryableExtensions.Page(queryable, take, skip);
+                queryable = queryable.Page(take, skip);
             }
             return queryable;
         }
@@ -289,7 +289,7 @@ namespace KendoNET.DynamicLinq
         /// Sorts the IQueryable using Dynamic Linq.
         /// </summary>
         /// <exception cref="OutOfMemoryException"></exception>
-        public static IQueryable<T> Sort<T>(IQueryable<T> queryable, IEnumerable<Sort> sort)
+        public static IQueryable<T> Sort<T>(this IQueryable<T> queryable, IEnumerable<Sort> sort)
         {
             if (sort?.Any() == true)
             {
@@ -303,7 +303,7 @@ namespace KendoNET.DynamicLinq
             return queryable;
         }
 
-        public static IQueryable<T> Page<T>(IQueryable<T> queryable, int take, int skip)
+        public static IQueryable<T> Page<T>(this IQueryable<T> queryable, int take, int skip)
         {
             return queryable.Skip(skip).Take(take);
         }
@@ -354,16 +354,14 @@ namespace KendoNET.DynamicLinq
                     newFilter.Filters = new List<Filter>
                     {
                         // Instead of comparing for exact equality, we compare as greater than the start of the day...
-                        new Filter
-                        {
+                        new() {
                             Field = filter.Field,
                             Filters = filter.Filters??[],
                             Value = new DateTime(localTime.Year, localTime.Month, localTime.Day, 0, 0, 0,DateTimeKind.Unspecified),
                             Operator = "gte"
                         },
                         // ...and less than the end of that same day (we're making an additional filter here)
-                        new Filter
-                        {
+                        new() {
                             Field = filter.Field,
                             Filters = filter.Filters??[],
                             Value = new DateTime(localTime.Year, localTime.Month, localTime.Day, 23, 59, 59,DateTimeKind.Unspecified),
